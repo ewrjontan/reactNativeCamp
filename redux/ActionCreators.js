@@ -1,6 +1,7 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
 
+//having function wrapped with dispatch is for redux thunk
 export const fetchComments = () => dispatch => {
     return fetch(baseUrl + 'comments')
         .then(response => {
@@ -140,4 +141,15 @@ export const partnersFailed = errMess => ({
 export const addPartners = partners => ({
     type: ActionTypes.ADD_PARTNERS,
     payload: partners
+});
+
+export const postFavorite = campsiteId => dispatch => {
+    setTimeout (() => {
+        dispatch(addFavorite(campsiteId));
+    }, 2000);
+};
+
+export const addFavorite = campsiteId => ({
+    type: ActionTypes.ADD_FAVORITE,
+    payload: campsiteId
 });
