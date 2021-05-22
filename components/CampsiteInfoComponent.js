@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet} from 'react-native';
-import { Card, Icon } from 'react-native-elements';
+import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet } from 'react-native';
+import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import { postFavorite } from '../redux/ActionCreators';
@@ -63,7 +63,14 @@ function RenderComments({comments}) {
         return (
             <View style={{margin:10}}>
                 <Text style={{fontSize: 14}}>{item.text}</Text>
-                <Text style={{fontSize: 12}}>{item.rating}</Text>
+
+                <Rating 
+                    readonly 
+                    startingValue={item.rating}
+                    imageSize={10}
+                    style={{alignItems: 'flex-start', paddingVertical: '5%'}}
+                />
+
                 <Text style={{fontSize: 12}}>{`-- ${item.author}, ${item.date}`}</Text>
 
             </View>
@@ -87,7 +94,10 @@ class CampsiteInfo extends Component {
         super(props);
 
         this.state = {
-            showModal: false
+            showModal: false,
+            rating: 5,
+            author: '',
+            text: ''
         };
     }
 
@@ -101,6 +111,19 @@ class CampsiteInfo extends Component {
         this.setState({showModal: !this.state.showModal});
     }
 
+    handleComment(campsiteId) {
+        console.log(JSON.stringify(this.state));
+        this.toggleModal();
+    }
+
+    resetForm(){
+        this.setState({
+            showModal: false, 
+            rating: 5, 
+            author: '', 
+            text: ''
+        });
+    }
 
     static navigationOptions = {
         title: 'Campsite Information'
@@ -126,9 +149,47 @@ class CampsiteInfo extends Component {
                     onRequestClose={() => this.toggleModal()}
                 >
                     <View style={styles.modal}>
+                        <Rating
+                            showRating
+                            startingValue={this.state.rating}
+                            imageSize={40}
+                            onFinishRating={rating=> this.setState({rating: rating})}
+                            style={{padingVertical: 10}}
+                        />
+
+                        <Input
+                            placeholder='Author'
+                            leftIcon={{type: 'font-awesome', name: 'user-o'}}
+                            leftIconContainerStyle={{paddingRight: 10}}
+                            onChangeText={author=> this.setState({author: author})}
+                            value={this.state.author}
+                        />
+
+                        <Input
+                            placeholder='Comment'
+                            leftIcon={{type: 'font-awesome', name: 'comment-o'}}
+                            leftIconContainerStyle={{paddingRight: 10}}
+                            onChangeText={text=> this.setState({text: text})}
+                            value={this.state.text}
+                        />
+
+                        <View>
+                            <Button
+                                title='Submit'
+                                color='#5637DD'
+                                onPress={() => {
+                                    this.handleComment(campsiteId);
+                                    this.resetForm();
+                                }}
+                            />
+                        </View>
+
                         <View style={{margin: 10}}>
                             <Button 
-                                onPress={() => this.toggleModal()}
+                                onPress={() => {
+                                    this.toggleModal();
+                                    this.resetForm();
+                                }}
                                 color='#808080'
                                 title='Cancel'
                             />
