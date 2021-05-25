@@ -9,6 +9,10 @@ export const favorites = (state = [], action) => {
             }
             return state.concat(action.payload);
         
+        case ActionTypes.DELETE_FAVORITE:
+            console.log("Made it to favorites.js reducer");
+            return state.filter(favorite => favorite !== action.payload);
+        
         default:
             return state;    
     }
