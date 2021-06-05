@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { baseUrl } from '../shared/baseUrl';
-
+import * as ImageManipulator from 'expo-image-manipulator';
 
 
 class LoginTab extends Component{
@@ -160,9 +160,22 @@ class RegisterTab extends Component {
             }); 
             if (!capturedImage.cancelled) {
                 console.log(capturedImage);
-                this.setState({imageUrl: capturedImage.uri});
+                //this.setState({imageUrl: capturedImage.uri});
+                this.processImage(capturedImage.uri);
             };  
         }
+    }
+
+    processImage = async(imgUri) => {
+       const processedImage = await ImageManipulator.manipulateAsync(
+            imgUri,
+            [{resize: {width: 400}}],
+            {format: ImageManipulator.SaveFormat.PNG}
+        ); 
+
+        console.log(processedImage);
+
+        this.setState({imageUrl: processedImage.uri});
     }
 
     handleRegister() {
